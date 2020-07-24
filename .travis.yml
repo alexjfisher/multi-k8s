@@ -6,6 +6,7 @@ before_install:
 - curl https://sdk.cloud.google.com > install.sh
 - bash install.sh --disable-prompts
 - source $HOME/google-cloud-sdk/path.bash.inc
+- gcloud config set disable_prompts true
 - gcloud components install kubectl
 - gcloud auth activate-service-account --key-file service-account.json
 - gcloud config set project light-footing-284313
