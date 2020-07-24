@@ -1,13 +1,16 @@
 sudo: required
 services:
 - docker
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
 - openssl aes-256-cbc -K $encrypted_bc7569e637a1_key -iv $encrypted_bc7569e637a1_iv
   -in service-account.json.enc -out service-account.json -d
 - curl https://sdk.cloud.google.com > install.sh
 - bash install.sh --disable-prompts
 - source $HOME/google-cloud-sdk/path.bash.inc
-- gcloud config set disable_prompts true
 - gcloud components install kubectl
 - gcloud auth activate-service-account --key-file service-account.json
 - gcloud config set project light-footing-284313
@@ -15,4 +18,12 @@ before_install:
 - gcloud container clusters get-credentials multi-cluster
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - docker build -t alexjfisher/react-test -f ./client/Dockerfile.dev ./client
+
+script:
 - docker run alexjfisher/react-test -e CI=true npm test
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
