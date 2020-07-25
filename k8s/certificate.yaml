@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: k8s-linfratech-uk-tls
+spec:
+  secretName: k8s-linfratech-uk
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: linfratech.uk
+  dnsNames:
+    - linfratech.uk
+    - www.linfratech.uk
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - linfratech.uk
+          - www.linfratech.uk
